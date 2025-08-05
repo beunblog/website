@@ -1,0 +1,8 @@
+img{
+    display: block;
+    margin: auto;
+}
+.item{
+    padding-left:10rem;
+    padding-right:10rem;
+}
