@@ -1,4 +1,3 @@
 img/
-posts/overview/files/
-posts/files/
-js/helloworld.js
+data/posts.json
+posts/helloworld.md
