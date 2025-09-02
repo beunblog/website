@@ -29,13 +29,8 @@ jobs:
 
     - name: Verify upload
       run: aws s3 ls s3://elasticbeanstalk-eu-central-1-417371241619/deploy-${GITHUB_SHA}.zip
-
+      
     - name: Deploy to Elastic Beanstalk
       run: |
-        aws elasticbeanstalk create-application-version \
-          --application-name beunblog_website \
-          --version-label $GITHUB_SHA \
-          --source-bundle S3Bucket="elasticbeanstalk-eu-central-1-417371241619",S3Key="deploy-${GITHUB_SHA}.zip"
-        aws elasticbeanstalk update-environment \
-          --environment-name bb-env \
-          --version-label $GITHUB_SHA
+        eb init beunblog_website --region eu-central-1
+        eb deploy bb-env --staged
