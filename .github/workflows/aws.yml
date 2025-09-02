@@ -23,9 +23,9 @@ jobs:
       run: |
         zip -r deploy.zip . -x '*.git*'
         aws elasticbeanstalk create-application-version \
-          --application-name MyApp \
+          --application-name beunblog_website \
           --version-label $GITHUB_SHA \
-          --source-bundle S3Bucket="my-bucket",S3Key="deploy-${GITHUB_SHA}.zip"
+          --source-bundle S3Bucket="beunblogbucket",S3Key="deploy-${GITHUB_SHA}.zip"
         aws elasticbeanstalk update-environment \
-          --environment-name my-env \
+          --environment-name bb-env \
           --version-label $GITHUB_SHA
