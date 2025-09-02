@@ -26,6 +26,10 @@ jobs:
     - name: Upload package to S3
       run: | 
         aws s3 cp deploy.zip s3://elasticbeanstalk-eu-central-1-417371241619/deploy-${GITHUB_SHA}.zip
+        --acl bucket-owner-full-control
+
+    - name: Verify upload
+      run: aws s3 ls s3://elasticbeanstalk-eu-central-1-417371241619/deploy-${GITHUB_SHA}.zip
 
     - name: Deploy to Elastic Beanstalk
       run: |
