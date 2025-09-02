@@ -19,6 +19,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
+    - name: Create deployment package
+      run: |
+        zip -r deploy.zip . -x "*.git*"
+
     - name: Upload package to S3
       run: | 
         aws s3 cp deploy.zip s3://beunblogbucket/deploy-${GITHUB_SHA}.zip
