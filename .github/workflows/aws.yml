@@ -30,12 +30,31 @@ jobs:
     - name: Verify upload
       run: aws s3 ls s3://elasticbeanstalk-eu-central-1-417371241619/deploy-${GITHUB_SHA}.zip
       
-    - name: Deploy to Elastic Beanstalk
+    - name: Create Application Version in EB
       run: |
         aws elasticbeanstalk create-application-version \
-          --application-name beunblog_website \
-          --version-label $GITHUB_SHA \
-          --source-bundle S3Bucket="elasticbeanstalk-eu-central-1-417371241619",S3Key="deploy-${GITHUB_SHA}.zip"
+        --application-name beunblog_website \
+        --version-label $GITHUB_SHA \
+        --source-bundle S3Bucket="elasticbeanstalk-eu-central-1-417371241619",S3Key="deploy-${GITHUB_SHA}.zip"
+
+    - name: Wait for EB Environment to be Ready
+      run: |
+        while true; do
+          STATE=$(aws elasticbeanstalk describe-environments \
+            --environment-names bb-env \
+            --query "Environments[0].Status" \
+            --output text)
+          echo "Current environment status: $STATE"
+          if [ "$STATE" = "Ready" ]; then
+            break
+          fi
+          echo "Waiting 10s..."
+          sleep 10
+        done
+
+    - name: Update EB Environment to new version
+      run: |
         aws elasticbeanstalk update-environment \
           --environment-name bb-env \
           --version-label $GITHUB_SHA
+
