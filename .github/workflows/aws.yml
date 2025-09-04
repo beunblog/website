@@ -40,4 +40,13 @@ jobs:
             --targets "Key=instanceIds,Values=i-06cf62b5137149cba" \
             --document-name "AWS-RunShellScript" \
             --comment "Trigger deployment" \
-            --parameters 'commands=["/home/ec2-user/deploy.sh"]'
+            --parameters 'commands=[
+                    "cd /var/www/html",
+                    "aws s3 cp s3://beunblogbucket/deploy-'${GITHUB_SHA}'.zip ./deploy.zip",
+                    "unzip -o deploy.zip",
+                    "rm deploy.zip",
+                    "sudo chown -R apache:apache /var/www/html",
+                    "sudo chmod -R 755 /var/www/html",
+                    "sudo systemctl restart httpd"
+              ]'
+              
