@@ -10,6 +10,14 @@
   <link href="css/style.css" type="text/css" rel="stylesheet">
   <script src ="js/loadHTML.js"></script>
   <script src="js/main.js"></script>
+
+  <?php
+  $db = new PDO(
+    'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME'),
+    getenv('DB_USER'),
+    getenv('DB_PASS')
+  );
+  ?>
   
 </head>
 <body>
