@@ -1,8 +1,9 @@
-name: Deploy to Elastic Beanstalk
+name: Deploy PHP App to EC2
 
 on:
   push:
-    branches: [ "main" ]  # or your branch
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -10,51 +11,33 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    - name: Setup AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.8.1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-central-1
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Create deployment package
+    - name: Archive code
+      run: zip -r deploy.zip . -x ".git/*"
+
+    - name: Upload and deploy to EC2
       run: |
-        zip -r deploy.zip . -x "*.git*"
+        # Copy zip to EC2
+        scp -o StrictHostKeyChecking=no deploy.zip ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/
 
-    - name: Upload package to S3
-      run: | 
-        aws s3 cp deploy.zip s3://elasticbeanstalk-eu-central-1-417371241619/deploy-${GITHUB_SHA}.zip --acl bucket-owner-full-control
+        # SSH into EC2 and deploy
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          # Stop Apache (optional if needed)
+          sudo systemctl stop httpd
 
-    - name: Verify upload
-      run: aws s3 ls s3://elasticbeanstalk-eu-central-1-417371241619/deploy-${GITHUB_SHA}.zip
-      
-    - name: Create Application Version in EB
-      run: |
-        aws elasticbeanstalk create-application-version \
-        --application-name beunblog_website \
-        --version-label $GITHUB_SHA \
-        --source-bundle S3Bucket="elasticbeanstalk-eu-central-1-417371241619",S3Key="deploy-${GITHUB_SHA}.zip"
+          # Move zip to web root and extract
+          sudo unzip -o /home/ec2-user/deploy.zip -d /var/www/html/
+          # Set permissions
+          sudo chown -R apache:apache /var/www/html
+          sudo find /var/www/html -type d -exec chmod 755 {} \;
+          sudo find /var/www/html -type f -exec chmod 644 {} \;
 
-    - name: Wait for EB Environment to be Ready
-      run: |
-        while true; do
-          STATE=$(aws elasticbeanstalk describe-environments \
-            --environment-names bb-env \
-            --query "Environments[0].Status" \
-            --output text)
-          echo "Current environment status: $STATE"
-          if [ "$STATE" = "Ready" ]; then
-            break
-          fi
-          echo "Waiting 10s..."
-          sleep 10
-        done
-
-    - name: Update EB Environment to new version
-      run: |
-        aws elasticbeanstalk update-environment \
-          --environment-name bb-env \
-          --version-label $GITHUB_SHA
-
+          # Start Apache
+          sudo systemctl start httpd
+        EOF
