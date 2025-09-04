@@ -1,4 +1,4 @@
-name: Deploy to EC2 via S3 + SSM
+name: Deploy PHP App
 
 on:
   push:
@@ -9,38 +9,35 @@ jobs:
   build-and-upload:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Zip project
-        run: zip -r deploy.zip . -x ".git/*"
+        run: |
+          zip -r deploy.zip . -x ".git/*"
 
       - name: Upload to S3
-        uses: aws-actions/aws-cli@v2
-        with:
-          aws-region: eu-central-1
-          args: s3 cp deploy.zip s3://beunblogbucket/deploy-${GITHUB_SHA}.zip
-
-      - name: Set deployment zip path
-        run: echo "DEPLOY_ZIP=s3://beunblogbucket/deploy-${GITHUB_SHA}.zip" >> $GITHUB_ENV
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp deploy.zip s3://beunblogbucket/deploy-${GITHUB_SHA}.zip
 
   deploy-to-ec2:
     runs-on: ubuntu-latest
     needs: build-and-upload
     steps:
-      - name: Trigger deploy on EC2 via SSM
-        uses: aws-actions/aws-cli@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
-          args: >
-            ssm send-command
-            --targets "Key=instanceIds,Values=i-06cf62b5137149cba"
-            --document-name "AWS-RunShellScript"
-            --comment "Deploy PHP app"
-            --parameters commands="
-              cd /var/www/html;
-              aws s3 cp $DEPLOY_ZIP ./deploy.zip;
-              unzip -o deploy.zip;
-              rm deploy.zip;
-              sudo systemctl restart httpd
-            "
+  
+      - name: Trigger deploy on EC2 via SSM
+        run: |
+          aws ssm send-command \
+            --targets "Key=instanceIds,Values=i-06cf62b5137149cba" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Trigger deployment" \
+            --parameters 'commands=["/home/ec2-user/deploy.sh"]'
