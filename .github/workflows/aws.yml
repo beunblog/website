@@ -33,7 +33,7 @@ jobs:
           aws-region: eu-central-1
           args: |
             ssm send-command \
-              --targets "Key=instanceIds,Values=<YOUR_EC2_INSTANCE_ID>" \
+              --targets "Key=instanceIds,Values=i-06cf62b5137149cba" \
               --document-name "AWS-RunShellScript" \
               --comment "Trigger deployment" \
               --parameters 'commands=["/home/ec2-user/deploy.sh"]'
