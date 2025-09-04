@@ -17,12 +17,11 @@ jobs:
           zip -r deploy.zip . -x ".git/*"
 
       - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          run: |
-            aws s3 cp deploy.zip s3://beunblogbucket/deploy-${GITHUB_SHA}.zip
+          aws s3 cp deploy.zip s3://beunblogbucket/deploy-${GITHUB_SHA}.zip
 
   deploy-to-ec2:
     runs-on: ubuntu-latest
