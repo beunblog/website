@@ -27,23 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-upload
     steps:
-      - name: Trigger deploy on EC2
-        run: |
-          # Replace with your EC2 public IP or DNS
-          EC2_PUBLIC_IP=ec2-3-122-224-4.eu-central-1.compute.amazonaws.com
-
-          # Download and deploy on EC2 using SSH
-          ssh -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP << 'EOF'
-            # Navigate to your web root (e.g., /var/www/html)
-            cd /var/www/html
-
-            # Pull latest zip from S3
-            aws s3 cp s3://beunblogbucket/deploy-${GITHUB_SHA}.zip ./deploy.zip
-
-            # Unzip to web root
-            unzip -o deploy.zip
-            rm deploy.zip
-
-            # Optional: restart Apache or PHP-FPM
-            sudo systemctl restart httpd
-          EOF
+      - name: Trigger deploy on EC2 via SSM
+        uses: aws-actions/aws-cli@v2
+        with:
+          aws-region: eu-central-1
+          args: |
+            ssm send-command \
+              --targets "Key=instanceIds,Values=<YOUR_EC2_INSTANCE_ID>" \
+              --document-name "AWS-RunShellScript" \
+              --comment "Trigger deployment" \
+              --parameters 'commands=["/home/ec2-user/deploy.sh"]'
