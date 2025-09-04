@@ -30,7 +30,7 @@ jobs:
       - name: Trigger deploy on EC2
         run: |
           # Replace with your EC2 public IP or DNS
-          EC2_PUBLIC_IP=YOUR_EC2_PUBLIC_IP
+          EC2_PUBLIC_IP=ec2-3-122-224-4.eu-central-1.compute.amazonaws.com
 
           # Download and deploy on EC2 using SSH
           ssh -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP << 'EOF'
