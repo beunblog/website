@@ -18,7 +18,7 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 cp deploy.zip s3://your-bucket-name/deploy-${GITHUB_SHA}.zip
+          aws s3 cp deploy.zip s3://beunblogbucket/deploy-${GITHUB_SHA}.zip
 
   deploy-to-ec2:
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
             cd /var/www/html
 
             # Pull latest zip from S3
-            aws s3 cp s3://your-bucket-name/deploy-${GITHUB_SHA}.zip ./deploy.zip
+            aws s3 cp s3://beunblogbucket/deploy-${GITHUB_SHA}.zip ./deploy.zip
 
             # Unzip to web root
             unzip -o deploy.zip
