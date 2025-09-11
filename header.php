@@ -35,7 +35,7 @@ $db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'));
                 <div class="collapse navbar-collapse" id="collapsibleNavbar">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="../index.html">Home</a>
+                            <a class="nav-link" href="../index.php">Home</a>
                         </li>
 <!--                       <li class="nav-item">-->
 <!--                            <a class="nav-link" href="#">Webtools</a>-->
