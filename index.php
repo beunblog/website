@@ -1,37 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Beunblog!</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link href="css/style.css" type="text/css" rel="stylesheet">
-  <script src ="js/loadHTML.js"></script>
-  <script src="js/main.js"></script>
+<?php
+include("header.php");
 
-  <?php
-  $db = new PDO(
-    'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME'),
-    getenv('DB_USER'),
-    getenv('DB_PASS')
-  );
-  ?>
-  
-</head>
-<body>
-<div class="container-fluid p-0">
-  <div class="container-fluid" id="header">
-  </div>
+$sql = "SELECT * FROM `posts`; ";
+$result = $conn->query($sql);
+?>
 <div class="container-fluid pt-5" id="post-list">
-    <!-- Previews will be inserted here -->
+    <?php 
+    for ($x = 0; $x < $result->num_rows; $x++){
+    echo '<div class="post-preview row item pt-5">';
+    echo '<div id="image" class="col-2">
+            <img src=$img alt=$title style="height: 250px;">
+          </div>
+          <div id="text" class="col-8">
+            <div id="title">
+              <h1 id="title_text">$title</h1>
+            </div>
+            <div id="summary">
+              <p id="summary_text">$summary</p>
+            </div>
+          </div>
+          <div id="info" class="col-2">
+            <div id="date" class="row" style="text-align:center;">
+              <b id="date_text">$date</b>
+            </div>
+            <div id="button" class="row" style="margin-top:100%;">
+              <a href="blog.html?post=$id class="btn btn-danger" role="button" aria-disabled="true">Read More</a>
+            </div>
+          </div>';
+    }
+    echo "</div>";
+    ?>
   </div>
-</div>
 
-<script>
-  loadHTML('#header', 'header.html');
-</script>
-
-</body>
-</html>
+<?php
+include("footer.php");
+?>
