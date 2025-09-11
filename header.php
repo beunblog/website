@@ -13,11 +13,11 @@
 // Create connection
 $db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'));
 
-// Check connection
-if ($db->connect_error) {
-  die("Connection failed: " . $db->connect_error);
-}
-echo "Connected successfully";
+// // Check connection
+// if ($db->connect_error) {
+//   die("Connection failed: " . $db->connect_error);
+// }
+// echo "Connected successfully";
 ?> 
 
 </head>
@@ -35,7 +35,7 @@ echo "Connected successfully";
                 <div class="collapse navbar-collapse" id="collapsibleNavbar">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
+                            <a class="nav-link" href="../index.html">Home</a>
                         </li>
 <!--                       <li class="nav-item">-->
 <!--                            <a class="nav-link" href="#">Webtools</a>-->
