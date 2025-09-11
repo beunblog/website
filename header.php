@@ -8,8 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="css/style.css" type="text/css" rel="stylesheet">
-    <script src ="js/loadHTML.js"></script>
-    <script src="js/main.js"></script>
 
      <?php
 // Create connection
