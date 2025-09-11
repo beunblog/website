@@ -14,8 +14,8 @@
 $db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'));
 
 // Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+if ($db->connect_error) {
+  die("Connection failed: " . $db->connect_error);
 }
 echo "Connected successfully";
 ?> 

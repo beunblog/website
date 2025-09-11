@@ -2,7 +2,7 @@
 include(__DIR__ . '/header.php');
 
 $sql = "SELECT * FROM `posts`; ";
-$result = $conn->query($sql);
+$result = $db->query($sql);
 ?>
 <div class="container-fluid pt-5" id="post-list">
     <?php 
