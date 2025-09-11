@@ -1,8 +1,12 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+?>
+
+<?php
 include(__DIR__ . '/../header.php');
 ?>
-<div
-
 <div class="container-fluid pt-5">
     <form action="" method="post">
         Number: <input type="number" name="quad_num"><br>
