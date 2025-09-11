@@ -17,7 +17,7 @@ error_reporting(E_ALL);
 
      <?php
 // Create connection
-$db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'));
+$db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'), getenv('DB_NAME'));
 
 // // Check connection
 // if ($db->connect_error) {
