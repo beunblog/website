@@ -1,5 +1,5 @@
 <?php
-include("header.php");
+include(__DIR__ . '/header.php');
 
 $sql = "SELECT * FROM `posts`; ";
 $result = $conn->query($sql);
@@ -33,5 +33,5 @@ $result = $conn->query($sql);
   </div>
 
 <?php
-include("footer.php");
+include(__DIR__ . '/footer.php');
 ?>

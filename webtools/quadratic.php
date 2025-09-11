@@ -1,5 +1,5 @@
 <?php
-include("..\header.php");
+include(__DIR__ . '/../header.php');
 ?>
 <div
 
@@ -30,6 +30,6 @@ if (!empty($_POST['quad_num']))
 
 </div>
 <?php
-include("../footer.php");
+include(__DIR__ . '/../footer.php');
 ?>
 
